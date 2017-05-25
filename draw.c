@@ -501,43 +501,77 @@ void scanline( struct matrix * points, int index, screen s){
   double x0,x1;
   int By,My,Ty;
   double dx0,dx1;
-  int i;
+  double dx1_2 = 0;
+  int bot_index,mid_index,top_index;
   printf("points->m[1][%d] = %d\n",index,points->m[1][index]);
   printf("points->m[1][%d] = %d\n",index+1,points->m[1][index+1]);
   printf("points->m[1][%d] = %d\n",index+2,points->m[1][index+2]);
+  bot_index = find_bot;
+  mid_index = find_mid;
+  top_index = find_top;
+  x0 = points->m[0][bot_index];
+  x1 = x0;
+  By = points->m[1][bot_index];
+  My = points->m[1][mid_index];
+  Ty = points->m[1][top_index];
+  dx0 = (points->m[0][top_index] - x0)/(points->m[1][top_index] - points->m[1][bot_index]);
+  if (points->m[1][bot_index] == points->m[1][mid_index])
+    dx1 = (points->m[0][top_index] - points->m[0][mid-index)/(points->m[1][top_index] - points->m[1][mid_index]);
 }
 
-int find_boty( struct matrix * points, int index){
-  int By;
+
+int find_bot( struct matrix * points, int index){
+  int bot_index;
   if (points->m[1][index] <= points->m[1][index+1] && points->m[1][index] <= points->m[1][index+2])
-    By = points->m[1][index];
+    bot_index = index;
   else if (points->m[1][index+1] <= points->m[1][i] && points->m[1][index+1] <= points->m[1][index+2])
-    By = points->m[1][index+1];
+    bot_index = index + 1;
   else
-    By = points->m[1][index+2];
-  printf("By = %d\n",By);
-  return By;
+    bot_index = index+2;
+  printf("bot_index = %d\n",bot_index);
+  return bot_index;
 }
 
-int find_midy( struct matrix * points, int index, int By){
-  int My;
-  if (points->m[1][index] == By && points->m[1][index+1] <= points->m[1][index+2])
-    My = points->m[1][index+1];
-  else if (points->m[1][index] == By && points->m[1][index+2] < points->m[1][index+1])
-    My = points->m[1][index+2];
-  else if (points->m[1][index+1] == By && points->m[1][index] <= points->m[1][index+2])
-    My = points->m[1][index];
-  else if (points->m[1][index+1] == By && points->m[1][index+2] < points->m[1][index])
-    My = points->m[1][index+2];
-  else if (points->m[1][index+2] == By && points->m[1][index] <= points->m[1][index+1])
-    My = points->m[1][index];
-  else if (points->m[1][index+2] == By && points->m[1][index+1] < points->m[1][index])
-    My = points->m[1][index+1];
-  printf("My = %d",My);
-  return My;
+int find_mid( struct matrix * points, int index, int bot_index){
+  int mid_index;
+  if (bot_index == index){
+    if (points->m[1][index+1] <= points->m[1][index+2])
+      mid_index = index+1;
+    else
+      mid_index = index+2
+  }
+  else if (bot_index == index+1){
+    if (points->m[1][index] <= points->m[1][index+2])
+      mid_index = index;
+    else
+      mid_index = index+2;
+  }
+  else if (bot_index == index+2){
+    if (points->m[1][index] <= points->m[1][index+1])
+      mid_index = index;
+    else
+      mid_index = index+1;
+  }
+  printf("mid_index = %d",mid_index);
+  return mid_index;
 }
 
-int find_topy( struct matrix *points,int index, int By, int My){
+int find_top( struct matrix *points,int index, int bot_index, int mid_index){
+  int top_index;
+  if (index == bot_index && index+1 == mid_index)
+    top_index = index+2;
+  else if (index == mid_index && index+1 == bot_index)
+    top_index = index+2;
+  else if  (index == bot_index && index+2 == mid_index)
+    top_index = index+1;
+  else if (index == mid_index && index+2 == bot_index)
+    top_index = index+1;
+  else if (index+1 == bot_index && index+2 == mid_index)
+    top_index = index;
+  else if (index+1 == mid_index && index+2 == bot_index)
+    top_index = index;
+  printf("top_index = %d",top_index);
+  return top_index;
 }
 
 
